@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculadora Anticipo de Renta · Dairo Impuestos</title>
+<meta name="description" content="Calcula el anticipo de renta para tu declaración. Compara Opción 1 y Opción 2 y elige la que menos te cuesta.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.7.0/dist/tabler-icons.min.css">
+
+<style>
+  :root{
+    --orange:#FF5836;
+    --orange-soft:rgba(255,88,54,.10);
+    --ink:#1A1A1A;
+    --text:#2C2C2A;
+    --text-soft:#6b6b67;
+    --text-faint:#9a9a96;
+    --bg:#ffffff;
+    --surface:#f6f5f1;
+    --border:rgba(0,0,0,.10);
+    --radius:12px;
+    --radius-sm:10px;
+    --green:#16a34a;
+    --green-soft:rgba(22,163,74,.10);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    color:var(--text);
+    background:var(--surface);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{text-decoration:none}
+
+  .page{max-width:520px;margin:0 auto;padding:0 1.25rem 3rem}
+
+  /* TOP BAR */
+  .top-bar{
+    padding:1.25rem 0 .85rem;
+    display:flex;
+    align-items:center;
+    gap:.6rem;
+    border-bottom:1px solid var(--border);
+    margin-bottom:1.75rem;
+  }
+  .top-bar-brand{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--orange)}
+  .top-bar-sep{color:var(--text-faint);font-size:13px}
+  .top-bar-label{font-size:11px;color:var(--text-soft)}
+
+  /* CARD */
+  .card{
+    background:var(--bg);
+    border-radius:var(--radius);
+    border:1px solid var(--border);
+    padding:1.5rem;
+    margin-bottom:1rem;
+  }
+
+  .hero-title{font-size:22px;font-weight:600;color:var(--text);line-height:1.3;margin-bottom:.35rem;letter-spacing:-.01em}
+  .hero-sub{font-size:13.5px;color:var(--text-soft);line-height:1.6;margin-bottom:1.5rem}
+
+  /* FORM */
+  .field{margin-bottom:1.15rem}
+  label{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:.4rem}
+  label .hint{font-weight:400;color:var(--text-faint);font-size:12px}
+  select,input[type="text"]{
+    width:100%;
+    padding:.75rem 1rem;
+    border:1.5px solid var(--border);
+    border-radius:var(--radius-sm);
+    font-family:inherit;
+    font-size:14px;
+    color:var(--text);
+    background:var(--bg);
+    outline:none;
+    transition:border-color .15s;
+  }
+  select{
+    appearance:none;
+    -webkit-appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6b67' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 1rem center;
+    padding-right:2.5rem;
+    cursor:pointer;
+  }
+  input:focus,select:focus{border-color:var(--orange)}
+  input::placeholder{color:var(--text-faint)}
+
+  .field-hidden{display:none!important}
+
+  .btn-calc{
+    width:100%;
+    padding:.9rem;
+    background:var(--orange);
+    color:#fff;
+    font-family:inherit;
+    font-size:15px;
+    font-weight:600;
+    border:none;
+    border-radius:var(--radius-sm);
+    cursor:pointer;
+    transition:background .18s,transform .12s;
+    margin-top:1.1rem;
+  }
+  .btn-calc:hover{background:#e8461e;transform:translateY(-1px)}
+  .btn-calc:active{transform:translateY(0)}
+
+  /* RESULTS */
+  .results{display:none}
+  .results.visible{display:block}
+
+  .result-label{
+    font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+    font-weight:600;color:var(--text-faint);margin-bottom:.85rem;
+  }
+
+  .opt-row{
+    display:flex;align-items:flex-start;gap:.9rem;
+    padding:1rem 1rem;
+    border-radius:var(--radius-sm);
+    border:1.5px solid var(--border);
+    margin-bottom:.65rem;
+    background:var(--surface);
+    position:relative;
+  }
+  .opt-row.winner{border-color:var(--green);background:var(--green-soft)}
+  .opt-row.loser{opacity:.65}
+  .opt-num{
+    width:28px;height:28px;border-radius:50%;
+    background:var(--orange-soft);color:var(--orange);
+    font-size:13px;font-weight:600;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;margin-top:2px;
+  }
+  .opt-row.winner .opt-num{background:var(--green);color:#fff}
+  .opt-body{flex:1;min-width:0}
+  .opt-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:.2rem}
+  .opt-detail{font-size:11.5px;color:var(--text-soft);line-height:1.55;margin-bottom:.4rem}
+  .opt-amount{font-size:19px;font-weight:600;color:var(--text);letter-spacing:-.01em}
+  .opt-row.winner .opt-amount{color:var(--green)}
+  .winner-badge{
+    position:absolute;top:.65rem;right:.75rem;
+    font-size:10px;font-weight:600;color:var(--green);
+    background:rgba(22,163,74,.15);
+    padding:2px 8px;border-radius:20px;
+    letter-spacing:.04em;text-transform:uppercase;
+  }
+
+  .result-nota{
+    font-size:12.5px;color:var(--text-soft);
+    line-height:1.6;margin:.25rem 0 1.25rem;
+    padding:.75rem 1rem;
+    background:var(--surface);
+    border-radius:var(--radius-sm);
+    border:1px solid var(--border);
+  }
+
+  .btn-copy{
+    width:100%;padding:.8rem;
+    background:var(--ink);color:#fff;
+    font-family:inherit;font-size:14px;font-weight:600;
+    border:none;border-radius:var(--radius-sm);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:8px;
+    transition:background .18s;
+  }
+  .btn-copy:hover{background:#333}
+  .btn-copy i{font-size:16px}
+  .btn-copy.ok{background:var(--green)}
+
+  .footer{
+    text-align:center;font-size:12px;color:var(--text-faint);
+    padding:1.5rem 0 1rem;line-height:1.6;
+  }
+  .footer a{color:var(--orange)}
+
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="top-bar">
+    <span class="top-bar-brand">Dairo Impuestos</span>
+    <span class="top-bar-sep">·</span>
+    <span class="top-bar-label">Calculadora · Anticipo de Renta</span>
+  </div>
+
+  <div class="card">
+    <h1 class="hero-title">Anticipo de renta</h1>
+    <p class="hero-sub">Calcula el anticipo que va en tu declaración. Compara las dos opciones y declara con la que menos te cuesta.</p>
+
+    <div class="field">
+      <label for="anio">Año del declarante</label>
+      <select id="anio">
+        <option value="">— Selecciona —</option>
+        <option value="1">Primer año declarando (25%)</option>
+        <option value="2">Segundo año declarando (50%)</option>
+        <option value="3">Tercer año en adelante (75%)</option>
+      </select>
+    </div>
+
+    <div class="field" id="campo-actual">
+      <label for="imp-actual">
+        Impuesto neto de renta <span class="hint">año actual</span>
+      </label>
+      <input type="text" id="imp-actual" placeholder="Ej. 10.000.000" inputmode="numeric">
+    </div>
+
+    <div class="field field-hidden" id="campo-anterior">
+      <label for="imp-anterior">
+        Impuesto neto de renta <span class="hint">año anterior</span>
+      </label>
+      <input type="text" id="imp-anterior" placeholder="Ej. 8.000.000" inputmode="numeric">
+    </div>
+
+    <div class="field">
+      <label for="retenciones">Retenciones en la fuente a favor</label>
+      <input type="text" id="retenciones" placeholder="Ej. 2.500.000 (0 si no tiene)" inputmode="numeric">
+    </div>
+
+    <button class="btn-calc" onclick="calcular()">
+      <i class="ti ti-calculator"></i> Calcular anticipo
+    </button>
+  </div>
+
+  <div class="card results" id="results">
+    <div class="result-label">Resultado del anticipo</div>
+
+    <div class="opt-row" id="row-op1">
+      <div class="opt-num">1</div>
+      <div class="opt-body">
+        <div class="opt-title">Opción 1</div>
+        <div class="opt-detail" id="detail-op1"></div>
+        <div class="opt-amount" id="amount-op1"></div>
+      </div>
+    </div>
+
+    <div class="opt-row field-hidden" id="row-op2">
+      <div class="opt-num">2</div>
+      <div class="opt-body">
+        <div class="opt-title">Opción 2</div>
+        <div class="opt-detail" id="detail-op2"></div>
+        <div class="opt-amount" id="amount-op2"></div>
+      </div>
+    </div>
+
+    <p class="result-nota" id="result-nota"></p>
+
+    <button class="btn-copy" id="btn-copy" onclick="copiar()">
+      <i class="ti ti-copy"></i>Copiar resultado
+    </button>
+  </div>
+
+  <footer class="footer">
+    Herramienta gratuita por
+    <a href="https://dairoborrero.github.io/Aliado-tributario/" target="_blank" rel="noopener">@dairo_impuestos</a>
+    · Dairo Borrero Chávez · Contador Público<br>
+    Resultado orientativo. No reemplaza asesoría profesional.
+  </footer>
+
+</div>
+<script>
+  var PCT = { '1': 0.25, '2': 0.50, '3': 0.75 };
+
+  function fmt(n) {
+    if (n <= 0) return '$0';
+    return '$' + Math.round(n).toLocaleString('es-CO');
+  }
+
+  function parse(id) {
+    var raw = document.getElementById(id).value.replace(/[^0-9]/g, '');
+    return raw ? parseInt(raw, 10) : 0;
+  }
+
+  ['imp-actual', 'imp-anterior', 'retenciones'].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', function() {
+      var digits = this.value.replace(/[^0-9]/g, '');
+      this.value = digits ? parseInt(digits, 10).toLocaleString('es-CO') : '';
+    });
+  });
+
+  document.getElementById('anio').addEventListener('change', function() {
+    var show = this.value === '2' || this.value === '3';
+    document.getElementById('campo-anterior').classList.toggle('field-hidden', !show);
+    document.getElementById('results').classList.remove('visible');
+  });
+
+  function calcular() {
+    var anio = document.getElementById('anio').value;
+    if (!anio) { alert('Selecciona el año del declarante.'); return; }
+
+    var impActual = parse('imp-actual');
+    if (!impActual) { alert('Ingresa el impuesto neto de renta del año actual.'); return; }
+
+    var ret = parse('retenciones');
+    var p = PCT[anio];
+    var pLabel = (p * 100) + '%';
+
+    // Opción 1
+    var bruto1 = impActual * p;
+    var op1 = Math.max(0, bruto1 - ret);
+
+    // Opción 2 (solo desde 2° año)
+    var op2 = null;
+    var impAnterior = 0;
+    var promedio = 0;
+
+    if (anio !== '1') {
+      impAnterior = parse('imp-anterior');
+      if (!impAnterior) { alert('Ingresa el impuesto neto de renta del año anterior.'); return; }
+      promedio = (impActual + impAnterior) / 2;
+      op2 = Math.max(0, promedio * p - ret);
+    }
+
+    // Limpiar clases previas
+    var rowOp1 = document.getElementById('row-op1');
+    var rowOp2 = document.getElementById('row-op2');
+    [rowOp1, rowOp2].forEach(function(r) {
+      r.classList.remove('winner', 'loser');
+      var b = r.querySelector('.winner-badge');
+      if (b) b.remove();
+    });
+
+    // Detalle Opción 1
+    document.getElementById('detail-op1').textContent =
+      fmt(impActual) + ' × ' + pLabel + ' − retenciones ' + fmt(ret);
+    document.getElementById('amount-op1').textContent = fmt(op1);
+
+    var nota = '';
+
+    if (op2 !== null) {
+      rowOp2.classList.remove('field-hidden');
+      document.getElementById('detail-op2').textContent =
+        'Promedio (' + fmt(impActual) + ' + ' + fmt(impAnterior) + ') ÷ 2 = ' +
+        fmt(promedio) + ' × ' + pLabel + ' − retenciones ' + fmt(ret);
+      document.getElementById('amount-op2').textContent = fmt(op2);
+
+      var badge = document.createElement('span');
+      badge.className = 'winner-badge';
+      badge.textContent = 'Recomendada';
+
+      if (op2 <= op1) {
+        rowOp2.classList.add('winner');
+        rowOp1.classList.add('loser');
+        rowOp2.appendChild(badge);
+        nota = 'Usa la Opción 2: te genera ' + fmt(op1 - op2) + ' menos de anticipo.';
+      } else {
+        rowOp1.classList.add('winner');
+        rowOp2.classList.add('loser');
+        rowOp1.appendChild(badge);
+        nota = 'Usa la Opción 1: te genera ' + fmt(op2 - op1) + ' menos de anticipo.';
+      }
+    } else {
+      rowOp2.classList.add('field-hidden');
+      rowOp1.classList.add('winner');
+      nota = 'En el primer año solo aplica la Opción 1. No hay año anterior para promediar.';
+    }
+
+    document.getElementById('result-nota').textContent = nota;
+    document.getElementById('results').classList.add('visible');
+
+    var btn = document.getElementById('btn-copy');
+    btn.classList.remove('ok');
+    btn.innerHTML = '<i class="ti ti-copy"></i>Copiar resultado';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function copiar() {
+    var anio = document.getElementById('anio').value;
+    var labels = { '1': 'Primer año (25%)', '2': 'Segundo año (50%)', '3': 'Tercer año en adelante (75%)' };
+    var op1Txt = document.getElementById('amount-op1').textContent;
+    var rowOp2 = document.getElementById('row-op2');
+    var nota = document.getElementById('result-nota').textContent;
+
+    var texto = '📊 Anticipo de renta — ' + labels[anio] + '\n\n';
+    texto += '▸ Opción 1: ' + op1Txt + '\n';
+    if (!rowOp2.classList.contains('field-hidden')) {
+      texto += '▸ Opción 2: ' + document.getElementById('amount-op2').textContent + '\n';
+    }
+    texto += '\n💡 ' + nota;
+    texto += '\n\nCalculado con herramienta de @dairo_impuestos · Resultado orientativo.';
+
+    navigator.clipboard.writeText(texto).then(function() {
+      var btn = document.getElementById('btn-copy');
+      btn.classList.add('ok');
+      btn.innerHTML = '<i class="ti ti-check"></i>¡Copiado!';
+      setTimeout(function() {
+        btn.classList.remove('ok');
+        btn.innerHTML = '<i class="ti ti-copy"></i>Copiar resultado';
+      }, 2500);
+    });
+  }
+</script>
+</body>
+</html>

@@ -141,6 +141,17 @@
 
   .hint{font-size:12px;color:var(--text-faint);text-align:center;margin-top:1rem}
 
+  /* TOOLS */
+  .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+  .tool-card{background:var(--surface);border-radius:var(--radius-sm);padding:1.25rem;border:1px solid var(--border);display:flex;flex-direction:column}
+  .tool-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--orange);background:var(--orange-soft);padding:3px 9px;border-radius:20px;margin-bottom:.75rem;align-self:flex-start}
+  .tool-badge i{font-size:11px}
+  .tool-card h3{font-size:14.5px;font-weight:600;color:var(--text);margin-bottom:.35rem;line-height:1.3}
+  .tool-card p{font-size:13px;color:var(--text-soft);line-height:1.55;flex:1;margin-bottom:1rem}
+  .tool-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--orange);background:var(--orange-soft);padding:.55rem 1rem;border-radius:8px;transition:background .18s,transform .12s;align-self:flex-start}
+  .tool-link:hover{background:rgba(255,88,54,.18);transform:translateY(-1px)}
+  .tool-link i{font-size:15px}
+
   /* DESKTOP refinements */
   @media(min-width:680px){
     .hero{padding:4.5rem 2rem 3.5rem}
@@ -302,6 +313,40 @@
 
     </div>
     <p class="hint">Toca cada categoría para ver el detalle</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="section-label">Herramientas gratuitas</div>
+    <h2 class="section-title">Úsalas sin costo · Directo desde aquí</h2>
+    <p class="section-sub">Herramientas que creé para que tú o tus clientes resuelvan dudas tributarias frecuentes en segundos.</p>
+    <div class="tool-grid">
+      <div class="tool-card">
+        <span class="tool-badge"><i class="ti ti-calendar-event" aria-hidden="true"></i>Renta 2026</span>
+        <h3>Vencimientos Renta 2026</h3>
+        <p>Calcula la fecha límite de declaración de renta según la cédula y genera el mensaje listo para enviarle al cliente.</p>
+        <a class="tool-link" href="https://dairoborrero.github.io/vencimientos-renta/" target="_blank" rel="noopener">
+          <i class="ti ti-arrow-right" aria-hidden="true"></i>Abrir herramienta
+        </a>
+      </div>
+      <div class="tool-card">
+        <span class="tool-badge"><i class="ti ti-world" aria-hidden="true"></i>Art. 10 ET</span>
+        <h3>¿Soy residente fiscal?</h3>
+        <p>Verificador paso a paso de residencia fiscal en Colombia. Resultado orientativo según el Art. 10 ET en menos de 2 minutos.</p>
+        <a class="tool-link" href="https://dairoborrero.github.io/residencia-fiscal/" target="_blank" rel="noopener">
+          <i class="ti ti-arrow-right" aria-hidden="true"></i>Abrir herramienta
+        </a>
+      </div>
+      <div class="tool-card">
+        <span class="tool-badge"><i class="ti ti-calculator" aria-hidden="true"></i>Renta · Anticipo</span>
+        <h3>Anticipo de renta</h3>
+        <p>Calcula el anticipo que va en tu declaración. Compara Opción 1 y Opción 2 y declara con la que menos te cuesta.</p>
+        <a class="tool-link" href="./anticipo-renta/" rel="noopener">
+          <i class="ti ti-arrow-right" aria-hidden="true"></i>Abrir herramienta
+        </a>
+      </div>
+    </div>
   </section>
 
   <div class="divider"></div>
